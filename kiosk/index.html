@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  >
+
+  <title>ShopClock Kiosk</title>
+
+  <meta name="theme-color" content="#030712">
+  <link rel="icon" href="../client/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+  <div id="app" class="app">
+
+    <section id="setup-view" class="view" hidden>
+      <div class="card">
+        <h1>ShopClock Kiosk Setup</h1>
+        <p class="description">
+          Enter the punch endpoint URL provided by your ShopClock administrator.
+        </p>
+
+        <form id="setup-form">
+          <label for="backend-url">Backend endpoint URL</label>
+          <input
+            id="backend-url"
+            name="backendUrl"
+            type="url"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+            placeholder="https://sc.krma/clock/punch"
+            required
+          >
+
+          <button type="submit">Save and start scanning</button>
+        </form>
+
+        <p id="setup-status" class="status" hidden></p>
+      </div>
+    </section>
+
+    <section id="scanner-view" class="view" hidden>
+      <video id="scanner-video" autoplay muted playsinline></video>
+
+      <div class="scan-overlay">
+        <div class="reticle"></div>
+        <p class="scan-hint">Show your ShopClock QR code to the camera</p>
+      </div>
+
+      <p id="camera-error-message" class="camera-error" hidden></p>
+    </section>
+
+    <section id="result-view" class="view" hidden aria-live="polite">
+      <div id="result-badge" class="direction-badge">
+        <span id="result-direction-label"></span>
+      </div>
+      <h1 id="result-name"></h1>
+      <p id="result-time"></p>
+    </section>
+
+    <section id="error-view" class="view" hidden aria-live="polite">
+      <div class="direction-badge error-badge">!</div>
+      <h1>Scan not accepted</h1>
+      <p id="error-message"></p>
+    </section>
+
+    <button id="settings-button" type="button" aria-label="Kiosk settings">⚙</button>
+    <span id="connection-badge" class="connection-badge" hidden>Offline</span>
+  </div>
+
+  <script src="./vendor/jsQR.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
