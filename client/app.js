@@ -186,7 +186,7 @@ async function generateTotp(
     secretBytes,
     {
       name: "HMAC",
-      hash: "SHA-1",
+      hash: "SHA-256",
     },
     false,
     ["sign"]

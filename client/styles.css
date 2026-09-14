@@ -58,6 +58,23 @@ main {
   color: #d1d5db;
 }
 
+#enrollment-view {
+  text-align: center;
+}
+
+#enrollment-view .description {
+  margin-bottom: 1.5rem;
+}
+
+#scan-enrollment {
+  width: min(100%, 20rem);
+  margin-inline: auto;
+}
+
+#enrollment-view form {
+  text-align: left;
+}
+
 form {
   display: grid;
   gap: 0.75rem;
