@@ -1,12 +1,15 @@
-const CONFIG_STORAGE_KEY = "shopclock.kiosk-config.v1";
+const CONFIG_STORAGE_KEY = "shopclock.kiosk-config.v2";
 
 const QR_PAYLOAD_PATTERN =
   /^shopclock:[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}:\d{8}$/i;
+
+const STATIC_CODE_PATTERN = /^shopclock-static:.+$/;
 
 const SAME_CODE_SUPPRESS_MS = 35_000;
 const RESULT_DISPLAY_MS = 4000;
 const ERROR_DISPLAY_MS = 5000;
 const FETCH_TIMEOUT_MS = 8000;
+const DUPLICATE_HINT_DISPLAY_MS = 2500;
 
 const STATE = Object.freeze({
   SETUP: "setup",
@@ -45,6 +48,7 @@ const setupStatus = document.querySelector("#setup-status");
 
 const scannerVideo = document.querySelector("#scanner-video");
 const cameraErrorMessage = document.querySelector("#camera-error-message");
+const duplicateScanMessage = document.querySelector("#duplicate-scan-message");
 
 const resultBadge = document.querySelector("#result-badge");
 const resultDirectionLabel = document.querySelector("#result-direction-label");
@@ -70,6 +74,7 @@ let currentState = config ? STATE.SCANNING : STATE.SETUP;
 let lastSubmittedCode = null;
 let lastSubmittedAt = 0;
 let returnTimer = null;
+let duplicateHintTimer = null;
 
 setupForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -253,6 +258,8 @@ function stopCamera() {
 
   scannerVideo.pause();
   scannerVideo.srcObject = null;
+
+  hideDuplicateHint();
 }
 
 function scanFrame() {
@@ -297,13 +304,19 @@ function scanFrame() {
 }
 
 function handleScan(scannedValue) {
-  if (!QR_PAYLOAD_PATTERN.test(scannedValue)) {
+  if (
+    !QR_PAYLOAD_PATTERN.test(scannedValue) &&
+    !STATIC_CODE_PATTERN.test(scannedValue)
+  ) {
     return;
   }
 
   if (isSuppressed(scannedValue)) {
+    showDuplicateHint();
     return;
   }
+
+  hideDuplicateHint();
 
   lastSubmittedCode = scannedValue;
   lastSubmittedAt = Date.now();
@@ -320,6 +333,18 @@ function handleScan(scannedValue) {
           : "Unable to reach the ShopClock server."
       );
     });
+}
+
+function showDuplicateHint() {
+  duplicateScanMessage.classList.add("visible");
+
+  clearTimeout(duplicateHintTimer);
+  duplicateHintTimer = setTimeout(hideDuplicateHint, DUPLICATE_HINT_DISPLAY_MS);
+}
+
+function hideDuplicateHint() {
+  clearTimeout(duplicateHintTimer);
+  duplicateScanMessage.classList.remove("visible");
 }
 
 function isSuppressed(code) {

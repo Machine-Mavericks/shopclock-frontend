@@ -166,6 +166,21 @@ button:hover {
   background: rgb(3 7 18 / 65%);
 }
 
+.duplicate-hint {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fcd34d;
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+}
+
+.duplicate-hint.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
 .camera-error {
   position: absolute;
   bottom: 3rem;
