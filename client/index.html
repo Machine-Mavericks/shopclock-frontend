@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <title>ShopClock</title>
+
+  <meta name="theme-color" content="#111827">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ShopClock">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+  <header>
+    <h1>ShopClock</h1>
+    <p>Student time card</p>
+  </header>
+
+  <main>
+    <div id="status" class="status" role="status" hidden></div>
+
+    <section id="enrollment-view" class="card" hidden>
+      <h2>Set up this device</h2>
+
+      <p class="description">
+        Enter the credential provided by your ShopClock administrator.
+      </p>
+
+      <button id="scan-enrollment" type="button">
+        Scan enrollment QR
+      </button>
+
+      <div class="divider">
+        <span>or enter manually</span>
+      </div>
+
+      <form id="enrollment-form">
+        <label for="student-name">Name</label>
+        <input
+          id="student-name"
+          name="studentName"
+          type="text"
+          autocomplete="name"
+          maxlength="100"
+          required
+        >
+
+        <label for="student-uuid">Student UUID</label>
+        <input
+          id="student-uuid"
+          name="studentUuid"
+          type="text"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+          placeholder="550e8400-e29b-41d4-a716-446655440000"
+          required
+        >
+
+        <label for="student-secret">TOTP secret</label>
+        <input
+          id="student-secret"
+          name="studentSecret"
+          type="password"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          required
+        >
+
+        <button type="submit">Save credential</button>
+      </form>
+    </section>
+
+    <section id="code-view" class="card code-card" hidden>
+      <div class="student-details">
+        <h2 id="display-name"></h2>
+        <p id="display-uuid"></p>
+      </div>
+
+      <div class="qr-container">
+        <canvas id="qr-code" aria-label="ShopClock QR code"></canvas>
+      </div>
+
+      <p class="scan-message">Present this code to the kiosk</p>
+
+      <div class="code-details">
+        <span>Code refreshes in</span>
+        <strong><span id="countdown">30</span>s</strong>
+      </div>
+
+      <button id="remove-credential" class="secondary" type="button">
+        Remove credential
+      </button>
+    </section>
+  </main>
+
+  <dialog id="scanner-dialog" class="scanner-dialog">
+    <div class="scanner-header">
+      <h2>Scan enrollment QR</h2>
+
+      <button
+        id="close-scanner"
+        class="close-button"
+        type="button"
+        aria-label="Close scanner"
+      >
+        &times;
+      </button>
+    </div>
+
+    <video
+      id="scanner-video"
+      autoplay
+      muted
+      playsinline
+    ></video>
+
+    <p id="scanner-help">
+      Point the camera at the ShopClock enrollment QR.
+    </p>
+  </dialog>
+
+  <footer>
+    <span id="connection-status">Checking connection…</span>
+  </footer>
+
+  <script src="./vendor/jsQR.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
